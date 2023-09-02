@@ -1,23 +1,20 @@
 class Solution {
 public:
-    map<string,int>m;
-    int c(int i,string &s,vector<int>&dp){
-        if(i>=s.size())return 0;
-        int ans=INT_MAX;
-        if(dp[i]!=-1)return dp[i];
-        ans = 1 + c(i+1,s,dp);
-        string k="";
-        for(int j=i;j<s.size();j++){
-            k+= s[j];
-            if(m[k]){
-                ans=min(ans,c(j+1,s,dp));
+    int minExtraChar(string s, vector<string>& dictionary) {
+        int max_val = s.length() + 1;
+        vector<int> dp(s.length() + 1, max_val);
+        dp[0] = 0;
+
+        unordered_set<string> dictionary_set(dictionary.begin(), dictionary.end());
+
+        for (int i = 1; i <= s.length(); ++i) {
+            dp[i] = dp[i - 1] + 1;
+            for (int l = 1; l <= i; ++l) {
+                if (dictionary_set.find(s.substr(i - l, l)) != dictionary_set.end()) {
+                    dp[i] = min(dp[i], dp[i - l]);
+                }
             }
         }
-        return dp[i]=ans;
-    }
-    int minExtraChar(string s, vector<string>& d) {
-        for(auto i : d)m[i]++;
-        vector<int>dp(s.size(),-1);
-        return c(0,s,dp);
+        return dp.back();
     }
 };
