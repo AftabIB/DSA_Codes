@@ -33,6 +33,8 @@ void insertAtTail(Node* &head,Node* &tail,int data)
 
 public:
     Node* copyRandomList(Node* head) {
+
+    //created a clone of list
     Node* cloneHead = NULL;
 	Node* cloneTail = NULL;
 	
