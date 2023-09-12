@@ -1,47 +1,45 @@
 import java.util.*;
 
 class AuthenticationManager {
-    private final TreeMap<Integer, String> timestamps;
     private final Map<String, Integer> tokens;
-    private final int timeToLive;
+    private final TreeMap<Integer, String> timestamps;
+    private int timeToLive;
 
-    public AuthenticationManager(final int timeToLive) {
-        this.timestamps = new TreeMap<>();
-        this.tokens = new HashMap<>();
+    public AuthenticationManager(int timeToLive) {
         this.timeToLive = timeToLive;
+        this.tokens = new HashMap<>();
+        this.timestamps = new TreeMap<>();
     }
 
-    public void generate(final String tokenId, final int currentTime) {
+    public void generate(String tokenId, int currentTime) {
         removeExpiredTokens(currentTime);
-        tokens.put(tokenId, currentTime);
-        timestamps.put(currentTime, tokenId);
+        tokens.put(tokenId, currentTime + timeToLive);
+        timestamps.put(currentTime + timeToLive, tokenId);
     }
 
-    public void renew(final String tokenId, final int currentTime) {
-        removeExpiredTokens(currentTime);
+    public void renew(String tokenId, int currentTime) {
         if (tokens.containsKey(tokenId)) {
-            int tokenTime = tokens.get(tokenId);
-            if (currentTime - tokenTime < timeToLive) {
-                timestamps.remove(tokenTime);
-                timestamps.put(currentTime, tokenId);
-                tokens.put(tokenId, currentTime);
+            int expirationTime = tokens.get(tokenId);
+            if (expirationTime > currentTime) {
+                timestamps.remove(expirationTime);
+                tokens.put(tokenId, currentTime + timeToLive);
+                timestamps.put(currentTime + timeToLive, tokenId);
             }
         }
     }
 
-    public int countUnexpiredTokens(final int currentTime) {
+    public int countUnexpiredTokens(int currentTime) {
         removeExpiredTokens(currentTime);
         return tokens.size();
     }
-    
-    private void removeExpiredTokens(final int currentTime) {
-        final Iterator<Map.Entry<Integer, String>> iterator = timestamps.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, String> entry = iterator.next();
-            int tokenTime = entry.getKey();
-            if (currentTime - tokenTime >= timeToLive) {
+
+    private void removeExpiredTokens(int currentTime) {
+        while (!timestamps.isEmpty()) {
+            Map.Entry<Integer, String> entry = timestamps.firstEntry();
+            int expirationTime = entry.getKey();
+            if (expirationTime <= currentTime) {
                 String tokenId = entry.getValue();
-                iterator.remove();
+                timestamps.pollFirstEntry();
                 tokens.remove(tokenId);
             } else {
                 break;
