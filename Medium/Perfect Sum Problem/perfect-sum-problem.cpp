@@ -6,32 +6,34 @@ using namespace std;
 class Solution{
 
 	public:
-	const int mod=1e9+7;
 	
-	int solve(int i, int arr[], int sum, vector<vector<int>>&dp){
-	    if (i < 0) {
-            if (sum == 0) {
+    int mod=1e9+7;
+    int solve(int index, int k, int *arr, vector<vector<int>>& dp) {
+       
+        if (index < 0){
+            if(k==0)
                 return 1;
-            } else {
-                return 0;
-            }
+            return 0;
         }
-        
-        if(dp[i][sum]!=-1) return dp[i][sum];
-	    
-	    int take=0;
-	    if(sum>=arr[i]){
-	        take=solve(i-1, arr, sum-arr[i], dp);
-	    }
-	    int ntake=solve(i-1, arr, sum, dp);
-	    return dp[i][sum]=(take+ntake)%mod;
-	}
-	
+           
+        if (dp[index][k] != -1)
+            return dp[index][k];
+    
+        int np = solve(index - 1, k, arr, dp);
+        int p = 0;
+        if (arr[index] <= k) {
+            p = solve(index - 1, k - arr[index], arr, dp);
+        }
+    
+        dp[index][k] = (np + p)%mod;
+    
+        return dp[index][k];
+    }
 	int perfectSum(int arr[], int n, int sum)
 	{
         // Your code goes here
-        vector<vector<int>>dp(n, vector<int>(sum+1, -1));
-        return solve(n-1, arr, sum, dp);
+        vector<vector<int>> dp(n, vector<int>(sum + 1, -1));
+        return solve(n - 1, sum, arr, dp);
 	}
 	  
 };
