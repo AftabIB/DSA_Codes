@@ -27,23 +27,47 @@
 // };
 
 //Tabulation
+// class Solution {
+// public:
+//     int lengthOfLIS(vector<int>& nums) {
+//         int n = nums.size();
+        
+//         vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+
+//         for(int index = n-1; index >= 0; index--) {
+//             for(int prev = index-1; prev >= -1; prev--) {
+//                 int noTake = dp[index+1][prev+1];
+//                 int take = 0;
+//                 if(prev == -1 || nums[index] > nums[prev]) {
+//                     take = 1 + dp[index+1][index+1];
+//                 }
+//                 dp[index][prev+1] = max(noTake, take);
+//             }
+//         }
+//         return dp[0][0];
+//     }
+// };
+
+//SO
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
         int n = nums.size();
         
-        vector<vector<int>> dp(n+1,vector<int>(n+1,0));
+        vector<int> next(n+1,0), curr(n+1,0);
 
         for(int index = n-1; index >= 0; index--) {
             for(int prev = index-1; prev >= -1; prev--) {
-                int noTake = dp[index+1][prev+1];
+                int noTake = 0 + next[prev+1];
                 int take = 0;
                 if(prev == -1 || nums[index] > nums[prev]) {
-                    take = 1 + dp[index+1][index+1];
+                    take = 1 + next[index+1];
                 }
-                dp[index][prev+1] = max(noTake, take);
+                curr[prev+1] = max(noTake, take);
             }
+            next = curr;
         }
-        return dp[0][0];
+        return next[0];
     }
 };
+
