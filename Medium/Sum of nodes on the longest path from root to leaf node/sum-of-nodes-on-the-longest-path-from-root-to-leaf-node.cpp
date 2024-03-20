@@ -116,43 +116,31 @@ struct Node
 */
 class Solution
 {
-public:
-    void solve(Node* root,int sum,int &maxSum,int len, int &maxLen)
+    private:
+    void f(Node* root, int &MaxSum ,int sum, int lvl, int &prevLvl)
     {
-        //base case
-        if(root == NULL)
-        {
-            if(len > maxLen)
-            {
-                maxLen = len;
-                maxSum = sum;
-            }
-            
-            else if(len == maxLen)
-            {
-                maxSum = max(sum,maxSum);
-            }
-            return;
-        }
+        if(!root) return ;
         
-        //update the sum data i.e curr node sum and previous all sum 
         sum += root->data;
-        solve(root->left,sum,maxSum,len+1,maxLen);
-        solve(root->right,sum,maxSum,len+1,maxLen);
+        if(lvl >= prevLvl)
+        {
+            if(lvl == prevLvl) MaxSum = max(MaxSum ,sum);
+            else MaxSum = sum;
+            prevLvl = lvl;
+        }
+
+        
+        f(root->left , MaxSum ,sum , lvl+1, prevLvl);
+        f(root->right , MaxSum ,sum , lvl+1, prevLvl);
     }
-    
-    int sumOfLongRootToLeafPath(Node *root)
-    {
-        int len = 0;
-        int maxLen = 0;
-        
-        int sum = 0;
-        int maxSum = INT_MIN;
-        
-        solve(root,sum,maxSum,len,maxLen);
-        return maxSum;
-        
-    }
+    public: 
+        int sumOfLongRootToLeafPath(Node *root)
+        {
+            int MaxSum = 0;
+            int prevLvl = 0;
+            f(root, MaxSum, 0, 0, prevLvl);
+            return MaxSum;
+        }
 };
 
 //{ Driver Code Starts.
