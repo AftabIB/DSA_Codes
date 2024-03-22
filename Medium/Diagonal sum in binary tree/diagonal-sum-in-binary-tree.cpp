@@ -97,32 +97,37 @@ class Solution
     public:
     vector <int> diagonalSum(Node* root) {
         // Add your code here
-        map<int,int> mp;
         vector<int> ans;
         if(root == NULL)
             return ans;
             
         queue<pair<Node*,int>> q;
+        map<int,int> mp;
+        
         q.push({root,0});
+        
         while(!q.empty())
         {
             Node* temp = q.front().first;
-            int lvl = q.front().second;
+            
+            int level = q.front().second;
             q.pop();
-            mp[lvl] += temp -> data;
-            // while(temp != NULL)
-            // {
-                // ans.push_back(temp->data);
-                if(temp -> left )
-                    q.push({temp -> left, lvl + 1});
-                if(temp -> right ){
-                    q.push({temp -> right, lvl });
-                    // temp = temp->right;
-                }    
-                    
-            // }
+            
+            mp[level] += temp->data;
+            
+            if(temp->left)
+            {
+                q.push({temp->left,level+1});
+            }
+            
+            if(temp->right)
+            {
+                q.push({temp->right,level});
+            }
         }
-        for(auto i : mp){
+        
+        for(auto i:mp)
+        {
             ans.push_back(i.second);
         }
         return ans;
