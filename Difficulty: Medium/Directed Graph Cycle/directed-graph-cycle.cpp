@@ -6,45 +6,45 @@ using namespace std;
 class Solution {
   public:
     // Function to detect cycle in a directed graph.
-    bool dfs(int node, vector<int> adj[], int vis[], int pathVis[])
-    {
-        vis[node] = 1;
-        pathVis[node] = 1;
-        
-        for(auto adjNode : adj[node])
-        {
-            //if node is not visited then
-            if(!vis[adjNode])
-            {
-                if(dfs(adjNode,adj,vis,pathVis) == true)
-                {
-                    return true;
-                }
-            }
-            else if(pathVis[adjNode])
-            {
-                    return true;
-                }
-        }
-        
-        pathVis[node] = 0;
-        return false;
-    }
-    
     bool isCyclic(int V, vector<int> adj[]) {
         // code here
-        int vis[V] = {0};
-        int pathVis[V] = {0};
         
-        for(int i=0;i<V;i++)
-        {
-            if(!vis[i])
-            {
-                if(dfs(i,adj,vis,pathVis) == true)
-                    return true;
+        vector<int> indegree(V, 0);
+        for (int i = 0; i < V; i++) {
+            for (auto j : adj[i]) {
+                indegree[j]++;
             }
         }
-        return false;
+    
+        // Step 2: Initialize the queue with all vertices having in-degree 0
+        queue<int> q;
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+    
+        int cnt = 0;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            cnt++;
+    
+            // Step 3: Reduce in-degree of all adjacent vertices
+            for (auto i : adj[node]) {
+                indegree[i]--;
+                if (indegree[i] == 0) {
+                    q.push(i);
+                }
+            }
+        }
+    
+        // Step 4: Check if all vertices were included in the topological sort
+        if (cnt == V) {
+            return false; // No cycle
+        }
+    
+        return true; // Cycle detected
     }
 };
 
