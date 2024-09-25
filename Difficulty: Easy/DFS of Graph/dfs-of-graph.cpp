@@ -6,13 +6,10 @@ using namespace std;
 class Solution {
   public:
     // Function to return a list containing the DFS traversal of the graph.
-    void solve(int node, vector<int> adj[], int vis[],vector<int> &ans)
+    void solve(int node,vector<int> adj[],int vis[], vector<int> &ans)
     {
         vis[node] = 1;
-        
         ans.push_back(node);
-        
-        //traverse all the neighbours
         for(auto adjNode : adj[node])
         {
             if(!vis[adjNode])
