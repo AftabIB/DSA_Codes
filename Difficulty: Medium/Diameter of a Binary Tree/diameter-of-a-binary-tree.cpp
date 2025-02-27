@@ -4,28 +4,35 @@ using namespace std;
 
 /* A binary tree node has data, pointer to left child
    and a pointer to right child */
-struct Node {
+class Node {
+  public:
     int data;
-    struct Node* left;
-    struct Node* right;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
 };
+
 Node* newNode(int val) {
-    Node* temp = new Node;
-    temp->data = val;
-    temp->left = NULL;
-    temp->right = NULL;
-    return temp;
+    return new Node(val);
 }
+
 Node* buildTree(string str) {
     // Corner Case
-    if (str.length() == 0 || str[0] == 'N') return NULL;
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
 
     // Creating vector of strings from input
     // string after spliting by space
     vector<string> ip;
 
     istringstream iss(str);
-    for (string str; iss >> str;) ip.push_back(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
 
     // Create the root of the tree
     Node* root = newNode(stoi(ip[0]));
@@ -57,7 +64,8 @@ Node* buildTree(string str) {
 
         // For the right child
         i++;
-        if (i >= ip.size()) break;
+        if (i >= ip.size())
+            break;
         currVal = ip[i];
 
         // If the right child is not null
@@ -77,49 +85,52 @@ Node* buildTree(string str) {
 
 
 // } Driver Code Ends
-/* Tree node structure  used in the program
 
-struct Node
-{
+/*
+class Node {
+public:
     int data;
-    struct Node* left;
-    struct Node* right;
+    Node* left;
+    Node* right;
 
-    Node(int x){
-        data = x;
-        left = right = NULL;
-    }
-}; */
-
-class Solution {
-  public:
-    // Function to return the diameter of a Binary Tree.
-    int heightAndDiameter(Node* root, int& diameter) 
-    {
-        if (root == NULL)
-            return 0;
-    
-        int LH = heightAndDiameter(root->left, diameter);
-        int RH = heightAndDiameter(root->right, diameter);
-        
-        // Update the diameter if the path through the root is larger
-        diameter = max(diameter, LH + RH + 1);
-        
-        // Return the height of the current node
-        return 1 + max(LH, RH);
-    }
-    
-    int diameter(Node* root) 
-    {
-        int diameter = 0;
-        heightAndDiameter(root, diameter);
-        return diameter;
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
     }
 };
 
+Node* newNode(int val) {
+    return new Node(val);
+}
+*/
+
+class Solution {
+  public:
+    int height(Node* node,int &diameter)
+    {
+        if(!node)
+            return 0;
+            
+        int leftH = height(node -> left, diameter);
+        int rightH = height(node -> right, diameter);
+        
+        diameter = max(diameter, leftH + rightH);
+        return 1 + max(leftH, rightH);
+    }
+    int diameter(Node* root) {
+        // Your code here
+        int diameter = 0;
+        height(root, diameter);
+        return diameter;
+        
+    }
+};
+
+
 //{ Driver Code Starts.
 
-/* Driver program to test size function*/
+/* Driver program to test size function */
 int main() {
     int t;
     scanf("%d\n", &t);
@@ -129,6 +140,9 @@ int main() {
         Node* root = buildTree(s);
         Solution ob;
         cout << ob.diameter(root) << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
